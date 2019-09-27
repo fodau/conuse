@@ -1,0 +1,16 @@
+{
+  "extends": "eslint-config-ali/react",
+  "parser": "babel-eslint",
+  "env": {
+    "jest": true
+  },
+  "rules": {
+    "strict": "off",
+    "no-console": "off",
+    "import/no-dynamic-require": "off",
+    "global-require": "off",
+    "require-yield": "off",
+    "react/prop-types": "off",
+    "import/no-named-as-default": "off"
+  }
+}
