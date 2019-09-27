@@ -11,6 +11,7 @@
     "global-require": "off",
     "require-yield": "off",
     "react/prop-types": "off",
-    "import/no-named-as-default": "off"
+    "import/no-named-as-default": "off",
+    "react/jsx-filename-extension": "off"
   }
 }

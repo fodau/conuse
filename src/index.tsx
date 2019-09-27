@@ -6,6 +6,12 @@
 
 import React, { createContext, useContext } from 'react';
 
+interface ContextProviderProps {
+  name: string;
+  Context: React.Context<{}>;
+  children: JSX.Element[] | JSX.Element;
+}
+
 const createConuse = (useWhatever = {}, bridges = {}) => {
   const names = Object.keys(useWhatever);
 
@@ -20,13 +26,11 @@ const createConuse = (useWhatever = {}, bridges = {}) => {
     }, {})
   );
 
-  const ContextProvider = ({ children, name, Context }) => (
-    <Context.Provider name={name} value={{ [name]: useWhatever[name]() }}>
-      {children}
-    </Context.Provider>
+  const ContextProvider = ({ children, name, Context }: ContextProviderProps) => (
+    <Context.Provider value={{ [name]: useWhatever[name]() }}>{children}</Context.Provider>
   );
 
-  const BridgeProvider = ({ children }) => names.reduce(
+  const ConuseProvider = ({ children }) => names.reduce(
     (Composed, name) => {
       const Context = contextMap[name];
       return (
@@ -41,7 +45,7 @@ const createConuse = (useWhatever = {}, bridges = {}) => {
     }, children)
   );
 
-  const useBridgeContext = (name) => {
+  const useConuseContext = (name?: string) => {
     if (name) {
       if (typeof contextMap[name] === 'function') {
         return contextMap[name]();
@@ -56,7 +60,7 @@ const createConuse = (useWhatever = {}, bridges = {}) => {
     }
   };
 
-  return [BridgeProvider, useBridgeContext];
+  return { ConuseProvider, useConuseContext };
 };
 
 export default createConuse;

@@ -21,16 +21,21 @@
     "@babel/preset-typescript": "7.3.3",
     "@testing-library/react": "^9.2.0",
     "@types/jest": "^24.0.18",
+    "@types/react": "^16.9.3",
+    "@typescript-eslint/eslint-plugin": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.9.0",
     "eslint-config-ali": "^4.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-react": "^7.11.1",
     "jest": "^24.9.0",
-    "ts-jest": "^24.1.0"
+    "react-dom": "^16.9.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:progressive-query-list/couse.git"
+    "url": "git@github.com:progressive-query-list/conuse.git"
   }
 }
