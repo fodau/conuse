@@ -1,4 +1,7 @@
 {
   "extends": "eslint-config-ali/react",
-  "parser": "babel-eslint"
+  "parser": "babel-eslint",
+  "rules": {
+    "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx", ".ts", ".tsx"] }]
+  }
 }

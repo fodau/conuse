@@ -6,12 +6,12 @@
 
 import React, { createContext, useContext } from 'react';
 
-const createMultiBridge = (useWhatever = {}, bridges = {}) => {
+const createConuse = (useWhatever = {}, bridges = {}) => {
   const names = Object.keys(useWhatever);
 
   const contextMap = names.reduce(
     (acc, name) => {
-      const Context = createContext();
+      const Context = createContext({});
       return { ...acc, [name]: Context };
     },
     Object.keys(bridges).reduce((acc, name) => {
@@ -59,4 +59,4 @@ const createMultiBridge = (useWhatever = {}, bridges = {}) => {
   return [BridgeProvider, useBridgeContext];
 };
 
-export default createMultiBridge;
+export default createConuse;
