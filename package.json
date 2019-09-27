@@ -1,0 +1,22 @@
+{
+  "name": "couse",
+  "description": "Context Hook 状态管理",
+  "version": "0.1.0",
+  "keywords": [
+    "context",
+    "react",
+    "hook"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-ali": "^4.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:progressive-query-list/couse.git"
+  }
+}
