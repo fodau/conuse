@@ -72,6 +72,7 @@ test('#Use all hook', () => {
 });
 
 test('#Multiple Hooks', () => {
+  const yieldLog: string[] = [];
   const COUNTER = 'counter';
   const TOGGLE = 'toggle';
   const { ConuseProvider, useConuseContext } = createConuse({
@@ -86,6 +87,7 @@ test('#Multiple Hooks', () => {
 
   const Count = () => {
     const { count } = useConuseContext(COUNTER);
+    yieldLog.push(`Count-${count}`);
     return <div>{count}</div>;
   };
 
@@ -96,6 +98,7 @@ test('#Multiple Hooks', () => {
 
   const Value = () => {
     const [state] = useConuseContext(TOGGLE);
+    yieldLog.push(`Toggle-${state}`);
     return <div>{state.toString()}</div>;
   };
 
@@ -112,13 +115,17 @@ test('#Multiple Hooks', () => {
   const { getByText } = render(<App />);
   expect(getByText('0')).toBeDefined();
   expect(getByText('false')).toBeDefined();
+  expect(yieldLog).toEqual(['Count-0', 'Toggle-false']);
 
   fireEvent.click(getByText('Increment'));
   expect(getByText('1')).toBeDefined();
+  expect(yieldLog).toEqual(['Count-0', 'Toggle-false', 'Count-1']);
 
   fireEvent.click(getByText('Toggle'));
   expect(getByText('true')).toBeDefined();
+  expect(yieldLog).toEqual(['Count-0', 'Toggle-false', 'Count-1', 'Toggle-true']);
 
   fireEvent.click(getByText('Toggle'));
   expect(getByText('false')).toBeDefined();
+  expect(yieldLog).toEqual(['Count-0', 'Toggle-false', 'Count-1', 'Toggle-true', 'Toggle-false']);
 });
