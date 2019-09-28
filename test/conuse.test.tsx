@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import createConuse from '../src/index';
 
 const useCounter = ({ initialCount = 0 } = {}) => {
@@ -185,4 +185,41 @@ test('#Compose Conuse', () => {
 
   fireEvent.click(getByText('Toggle'));
   expect(getByText('false')).toBeDefined();
+});
+
+test('#GetStore', () => {
+  const COUNTER = 'counter';
+  const { ConuseProvider, useConuseContext, getContext } = createConuse({ [COUNTER]: useCounter });
+
+  const Increment = () => {
+    const { increment } = useConuseContext(COUNTER);
+    return <button onClick={increment}>Increment</button>;
+  };
+
+  const Count = () => {
+    const { count } = useConuseContext(COUNTER);
+    return <div>{count}</div>;
+  };
+
+  const App = () => (
+    <ConuseProvider>
+      <Increment />
+      <Count />
+    </ConuseProvider>
+  );
+
+  const { getByText } = render(<App />);
+  expect(getByText('0')).toBeDefined();
+  expect(getContext(COUNTER).count).toEqual(0);
+
+  act(() => {
+    getContext(COUNTER).increment();
+  });
+
+  expect(getByText('1')).toBeDefined();
+  expect(getContext(COUNTER).count).toEqual(1);
+
+  fireEvent.click(getByText('Increment'));
+  expect(getByText('2')).toBeDefined();
+  expect(getContext(COUNTER).count).toEqual(2);
 });

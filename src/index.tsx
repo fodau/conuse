@@ -4,7 +4,7 @@
  * * https://github.com/jamiebuilds/unstated-next
  */
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, Fragment } from 'react';
 
 type EmptyContext = React.Context<{}>;
 
@@ -23,15 +23,32 @@ interface Obj {
   [name: string]: any;
 }
 
+interface IStore {
+  get: (name?: string) => any;
+  set: (store: any) => void;
+}
+
 interface IConuse {
   ConuseProvider: React.FC<ConuseProviderProps>;
   useConuseContext: (name?: string) => any;
+  getContext: IStore['get'];
 }
+
+const createStore: () => IStore = () => {
+  let store: any = null;
+  return {
+    get: name => (name ? store[name] : store),
+    set: ($store) => {
+      store = $store;
+    },
+  };
+};
 
 const createConuse: (
   useWhatever: { [name: string]: () => any },
   conuseMap?: { [name: string]: IConuse }
 ) => IConuse = (useWhatever = {}, conuseMap = {}) => {
+  const store = createStore();
   const names = Object.keys(useWhatever);
 
   const contextMap: { [name: string]: EmptyContext | Function } = names.reduce(
@@ -49,21 +66,34 @@ const createConuse: (
     <Context.Provider value={{ [name]: useWhatever[name]() }}>{children}</Context.Provider>
   );
 
-  const ConuseProvider: IConuse['ConuseProvider'] = ({ children }: ConuseProviderProps) =>
-    names.reduce(
+  const StoreComponent = () => {
+    const context = useConuseContext();
+    store.set(
+      Object.keys(context).reduce((acc, name) => ({ ...acc, [name]: context[name]() }), {})
+    );
+    return null;
+  };
+
+  const ConuseProvider: IConuse['ConuseProvider'] = ({ children }: ConuseProviderProps) => names.reduce(
+    (Composed, name) => {
+      const Context = contextMap[name] as EmptyContext;
+      return (
+        <ContextProvider Context={Context} name={name}>
+          {Composed}
+        </ContextProvider>
+      );
+    },
+    Object.keys(conuseMap).reduce(
       (Composed, name) => {
-        const Context = contextMap[name] as EmptyContext;
-        return (
-          <ContextProvider Context={Context} name={name}>
-            {Composed}
-          </ContextProvider>
-        );
-      },
-      Object.keys(conuseMap).reduce((Composed, name) => {
         const conuse = conuseMap[name];
         return <conuse.ConuseProvider>{Composed}</conuse.ConuseProvider>;
-      }, children)
-    );
+      },
+      <Fragment>
+        <StoreComponent />
+        {children}
+      </Fragment>
+    )
+  );
 
   const useConuseContext: IConuse['useConuseContext'] = (name) => {
     if (name) {
@@ -83,7 +113,7 @@ const createConuse: (
     }
   };
 
-  return { ConuseProvider, useConuseContext };
+  return { ConuseProvider, useConuseContext, getContext: store.get };
 };
 
 export default createConuse;
