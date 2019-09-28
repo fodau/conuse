@@ -176,4 +176,13 @@ test('#Compose Conuse', () => {
   const { getByText } = render(<App />);
   expect(getByText('0')).toBeDefined();
   expect(getByText('false')).toBeDefined();
+
+  fireEvent.click(getByText('Increment'));
+  expect(getByText('1')).toBeDefined();
+
+  fireEvent.click(getByText('Toggle'));
+  expect(getByText('true')).toBeDefined();
+
+  fireEvent.click(getByText('Toggle'));
+  expect(getByText('false')).toBeDefined();
 });
