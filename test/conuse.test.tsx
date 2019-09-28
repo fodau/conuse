@@ -129,3 +129,51 @@ test('#Multiple Hooks', () => {
   expect(getByText('false')).toBeDefined();
   expect(yieldLog).toEqual(['Count-0', 'Toggle-false', 'Count-1', 'Toggle-true', 'Toggle-false']);
 });
+
+test('#Compose Conuse', () => {
+  const COUNTER = 'counter';
+  const TOGGLE = 'toggle';
+
+  const ToggleConuse = createConuse({ [TOGGLE]: useToggle });
+
+  const { ConuseProvider, useConuseContext } = createConuse(
+    {
+      [COUNTER]: useCounter,
+    },
+    { [TOGGLE]: ToggleConuse }
+  );
+
+  const Increment = () => {
+    const { increment } = useConuseContext(COUNTER);
+    return <button onClick={increment}>Increment</button>;
+  };
+
+  const Count = () => {
+    const { count } = useConuseContext(COUNTER);
+    return <div>{count}</div>;
+  };
+
+  const Toggle = () => {
+    const [, toggle] = useConuseContext(TOGGLE);
+    return <div onClick={toggle}>Toggle</div>;
+  };
+
+  const Value = () => {
+    const [state] = useConuseContext(TOGGLE);
+    return <div>{state.toString()}</div>;
+  };
+
+  const App = () => (
+    <ConuseProvider>
+      <Increment />
+      <Count />
+
+      <Toggle />
+      <Value />
+    </ConuseProvider>
+  );
+
+  const { getByText } = render(<App />);
+  expect(getByText('0')).toBeDefined();
+  expect(getByText('false')).toBeDefined();
+});

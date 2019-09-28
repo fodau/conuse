@@ -23,7 +23,15 @@ interface Obj {
   [name: string]: any;
 }
 
-const createConuse = (useWhatever: { [name: string]: () => any } = {}, bridges: Obj = {}) => {
+interface IConuse {
+  ConuseProvider: React.FC<ConuseProviderProps>;
+  useConuseContext: (name?: string) => any;
+}
+
+const createConuse: (
+  useWhatever: { [name: string]: () => any },
+  conuseMap?: { [name: string]: IConuse }
+) => IConuse = (useWhatever = {}, conuseMap = {}) => {
   const names = Object.keys(useWhatever);
 
   const contextMap: { [name: string]: EmptyContext | Function } = names.reduce(
@@ -31,9 +39,9 @@ const createConuse = (useWhatever: { [name: string]: () => any } = {}, bridges: 
       const Context = createContext({});
       return { ...acc, [name]: Context };
     },
-    Object.keys(bridges).reduce((acc, name) => {
-      const [, Context] = bridges[name];
-      return { ...acc, [name]: Context };
+    Object.keys(conuseMap).reduce((acc, name) => {
+      const conuse = conuseMap[name];
+      return { ...acc, [name]: conuse.useConuseContext };
     }, {})
   );
 
@@ -41,7 +49,7 @@ const createConuse = (useWhatever: { [name: string]: () => any } = {}, bridges: 
     <Context.Provider value={{ [name]: useWhatever[name]() }}>{children}</Context.Provider>
   );
 
-  const ConuseProvider = ({ children }: ConuseProviderProps) =>
+  const ConuseProvider: IConuse['ConuseProvider'] = ({ children }: ConuseProviderProps) =>
     names.reduce(
       (Composed, name) => {
         const Context = contextMap[name] as EmptyContext;
@@ -51,16 +59,16 @@ const createConuse = (useWhatever: { [name: string]: () => any } = {}, bridges: 
           </ContextProvider>
         );
       },
-      Object.keys(bridges).reduce((Composed, name) => {
-        const [TheBridgeProvider] = bridges[name];
-        return <TheBridgeProvider>{Composed}</TheBridgeProvider>;
+      Object.keys(conuseMap).reduce((Composed, name) => {
+        const conuse = conuseMap[name];
+        return <conuse.ConuseProvider>{Composed}</conuse.ConuseProvider>;
       }, children)
     );
 
-  const useConuseContext = (name?: string) => {
+  const useConuseContext: IConuse['useConuseContext'] = (name) => {
     if (name) {
       if (typeof contextMap[name] === 'function') {
-        return (contextMap[name] as Function)();
+        return (contextMap[name] as Function)(name);
       } else {
         return useContext<Obj>(contextMap[name] as EmptyContext)[name];
       }
