@@ -6,16 +6,27 @@
 
 import React, { createContext, useContext } from 'react';
 
+type EmptyContext = React.Context<{}>;
+
 interface ContextProviderProps {
   name: string;
-  Context: React.Context<{}>;
-  children: JSX.Element[] | JSX.Element;
+  Context: EmptyContext;
+  children: React.ReactElement | React.ReactElement[];
 }
 
-const createConuse = (useWhatever = {}, bridges = {}) => {
+// TODO 先用 any 解决了，React.ReactElement | React.ReactElement[] 一直有问题
+interface ConuseProviderProps {
+  children: any;
+}
+
+interface Obj {
+  [name: string]: any;
+}
+
+const createConuse = (useWhatever: { [name: string]: () => any } = {}, bridges: Obj = {}) => {
   const names = Object.keys(useWhatever);
 
-  const contextMap = names.reduce(
+  const contextMap: { [name: string]: EmptyContext | Function } = names.reduce(
     (acc, name) => {
       const Context = createContext({});
       return { ...acc, [name]: Context };
@@ -30,31 +41,35 @@ const createConuse = (useWhatever = {}, bridges = {}) => {
     <Context.Provider value={{ [name]: useWhatever[name]() }}>{children}</Context.Provider>
   );
 
-  const ConuseProvider = ({ children }) => names.reduce(
-    (Composed, name) => {
-      const Context = contextMap[name];
-      return (
-        <ContextProvider Context={Context} name={name}>
-          {Composed}
-        </ContextProvider>
-      );
-    },
-    Object.keys(bridges).reduce((Composed, name) => {
-      const [TheBridgeProvider] = bridges[name];
-      return <TheBridgeProvider>{Composed}</TheBridgeProvider>;
-    }, children)
-  );
+  const ConuseProvider = ({ children }: ConuseProviderProps) =>
+    names.reduce(
+      (Composed, name) => {
+        const Context = contextMap[name] as EmptyContext;
+        return (
+          <ContextProvider Context={Context} name={name}>
+            {Composed}
+          </ContextProvider>
+        );
+      },
+      Object.keys(bridges).reduce((Composed, name) => {
+        const [TheBridgeProvider] = bridges[name];
+        return <TheBridgeProvider>{Composed}</TheBridgeProvider>;
+      }, children)
+    );
 
   const useConuseContext = (name?: string) => {
     if (name) {
       if (typeof contextMap[name] === 'function') {
-        return contextMap[name]();
+        return (contextMap[name] as Function)();
       } else {
-        return useContext(contextMap[name])[name];
+        return useContext<Obj>(contextMap[name] as EmptyContext)[name];
       }
     } else {
       return names.reduce(
-        (acc, $name) => ({ ...acc, [$name]: () => useContext(contextMap[$name])[$name] }),
+        (acc, $name) => ({
+          ...acc,
+          [$name]: () => useContext<Obj>(contextMap[$name] as EmptyContext)[$name],
+        }),
         {}
       );
     }
