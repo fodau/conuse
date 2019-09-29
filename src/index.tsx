@@ -4,7 +4,7 @@
  * * https://github.com/jamiebuilds/unstated-next
  */
 
-import React, { createContext, useContext, Fragment } from 'react';
+import React, { useContext, createContext, Fragment } from 'react';
 
 type EmptyContext = React.Context<{}>;
 

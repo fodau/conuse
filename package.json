@@ -2,13 +2,19 @@
   "name": "conuse",
   "description": "Context Hook 状态管理",
   "version": "0.1.0",
+  "main": "dist/conuse.cjs.js",
+  "module": "dist/conuse.es.js",
+  "jsnext:main": "dist/conuse.es.js",
+  "unpkg": "dist/conuse.min.js",
+  "types": "dist/ts/src",
   "keywords": [
     "context",
     "react",
     "hook"
   ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc --emitDeclarationOnly && rollup -c"
   },
   "dependencies": {
     "react": "^16.9.0"
@@ -32,7 +38,14 @@
     "jest": "^24.9.0",
     "react-dom": "^16.9.0",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "rollup": "1.16.3",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-commonjs": "10.0.1",
+    "rollup-plugin-ignore": "1.0.5",
+    "rollup-plugin-node-resolve": "5.2.0",
+    "rollup-plugin-replace": "2.2.0",
+    "rollup-plugin-uglify": "6.0.2"
   },
   "repository": {
     "type": "git",

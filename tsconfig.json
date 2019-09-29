@@ -19,5 +19,5 @@
     "removeComments": true,
     "stripInternal": true
   },
-  "exclude": ["examples", "dist"]
+  "exclude": ["examples", "dist", "test"]
 }
