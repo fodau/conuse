@@ -1,6 +1,6 @@
 {
   "name": "conuse",
-  "description": "Context Hook 状态管理",
+  "description": "Share Hook with Context",
   "version": "0.2.0",
   "main": "dist/conuse.cjs.js",
   "module": "dist/conuse.es.js",
