@@ -1,7 +1,7 @@
 {
   "name": "conuse",
   "description": "Context Hook 状态管理",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/conuse.cjs.js",
   "module": "dist/conuse.es.js",
   "jsnext:main": "dist/conuse.es.js",
