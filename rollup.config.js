@@ -23,7 +23,7 @@ const main = {
     {
       file: pkg.main,
       format: 'cjs',
-      // exports: 'named',
+      exports: 'named',
     },
     {
       file: pkg.module,

@@ -2,6 +2,8 @@
 
 > Share `Hook` with `Context`
 
+## Get Started
+
 ```js
 import React, { useState } from 'react';
 import createConuse from 'conuse';
@@ -55,11 +57,11 @@ yarn add conuse
 
 ## API
 
-### `createConuse(useValue[, conuse])`
+### `const { ConuseProvider, useConuseContext, getContext } = createConuse(useMap[, conuse])`
 
-Conuse exports a single factory method called `createConuse` which return `conuse` type, like that:
+Conuse library exports a single factory method called `createConuse` which return `conuse` type, as follow:
 
-```sh
+```
 Conuse {
   ConuseProvider: React.FC<any>;
   useConuseContext: (name?: string) => any;
@@ -67,14 +69,14 @@ Conuse {
 }
 ```
 
-#### useValue
+#### useMap
 
 Type: `{ [name: string]: hook }`
 
-It receives custom hook map, use it to compose multiple hook. You can access one hook by pass name to `useConuseContext` parameter.
+It receives custom hook map, using it to compose multiple hook. You can access one hook by passing name to `useConuseContext` parameter.
 
 ```js
-const { ConuseProvider, useConuseContext } = createConuse({ counter: useCounter });
+const { useConuseContext } = createConuse({ counter: useCounter });
 const Component = () => {
   const { count } = useConuseContext('counter');
   return count;
@@ -89,13 +91,47 @@ Using it to compose multiple conuse.
 
 ```js
 const toggleConuse = createConuse({ toggle: useToggle });
-const { ConuseProvider, useConuseContext } = createConuse(
-  { counter: useCounter },
-  { toggle: toggleConuse }
-);
+const { useConuseContext } = createConuse({ counter: useCounter }, { toggle: toggleConuse });
 const Component = () => {
   const { count } = useConuseContext('counter');
   const { toggle } = useConuseContext('toggle');
   return `${count}${toggle}`;
 };
 ```
+
+#### ConuseProvider
+
+Type: React.FC<any>
+
+Just like [Context.Provider](https://reactjs.org/docs/context.html#contextprovider), to put the `ConuseProvider` at the top of your App.
+
+```js
+<ConuseProvider>
+  <App />
+</ConuseProvider>
+```
+
+#### useConuseContext
+
+Type: (name?: string) => any
+
+The children of ConuseProvider can get certain hook by useConuseContext.
+
+```js
+const [value, setValue] = useConuseContext(<name>)
+```
+
+The `name` parameter must be one of the keys of useMap, and you can get the returned of relevant hook which will be executed.
+
+If you want to get all hooks, not passing name to useConuseContext. But the return of `useConuseContext()` is all hooks, not the
+returned of all hooks, you need to execute hook function to get `state` and `setState`.
+
+#### getContext
+
+Type: (name?: string) => any
+
+The difference between getContext and useConuseContext is `getContext` can be used everywhere, not only in Function Component.
+
+## Inpiration
+
+Thanks to [constate](https://github.com/diegohaz/constate) and [unstated-next](https://github.com/jamiebuilds/unstated-next) incredible work, and learned a lot from @kentcdodds' [Application State Management with React](https://kentcdodds.com/blog/application-state-management-with-react/).
