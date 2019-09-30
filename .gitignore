@@ -9,3 +9,4 @@ test-tmp
 build/*.map
 .deps
 dist
+.cache

@@ -11,3 +11,4 @@ tap.log
 build/*.map
 .deps
 test
+.cache
