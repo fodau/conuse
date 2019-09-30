@@ -1,6 +1,10 @@
 {
   "private": true,
+  "scripts": {
+    "start": "parcel ./index.html --out-dir ./dist"
+  },
   "dependencies": {
+    "parcel": "^1.12.3",
     "conuse": "^0.2.0",
     "react": "^16.10.1",
     "react-dom": "^16.10.1"
