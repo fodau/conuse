@@ -45,11 +45,11 @@ const createStore: () => IStore = () => {
 };
 
 const createConuse: (
-  useWhatever: { [name: string]: () => any },
+  useMap: { [name: string]: () => any },
   conuseMap?: { [name: string]: IConuse }
-) => IConuse = (useWhatever = {}, conuseMap = {}) => {
+) => IConuse = (useMap = {}, conuseMap = {}) => {
   const store = createStore();
-  const names = Object.keys(useWhatever);
+  const names = Object.keys(useMap);
 
   const contextMap: { [name: string]: EmptyContext | Function } = names.reduce(
     (acc, name) => {
@@ -63,7 +63,7 @@ const createConuse: (
   );
 
   const ContextProvider = ({ children, name, Context }: ContextProviderProps) => (
-    <Context.Provider value={{ [name]: useWhatever[name]() }}>{children}</Context.Provider>
+    <Context.Provider value={{ [name]: useMap[name]() }}>{children}</Context.Provider>
   );
 
   const StoreComponent = () => {
