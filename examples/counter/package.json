@@ -4,12 +4,9 @@
     "start": "parcel ./index.html --out-dir ./dist"
   },
   "dependencies": {
+    "parcel": "^1.12.3",
     "conuse": "^0.2.0",
     "react": "^16.10.1",
     "react-dom": "^16.10.1"
-  },
-  "devDependencies": {
-    "react-router-dom": "^5.1.2",
-    "parcel": "^1.12.3"
   }
 }

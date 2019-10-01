@@ -1,37 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createConuse from 'conuse';
+import Counter from './counter/App';
+import Toggle from './toggle/App';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
-// 1️⃣ Create a custom hook
-function useCounter() {
-  const [count, setCount] = React.useState(0);
-  const increment = () => setCount(count + 1);
-  return { count, increment };
-}
-
-// 2️⃣ Wrap your hook with the createConuse factory
-const { ConuseProvider, useConuseContext } = createConuse({
-  counter: useCounter,
-});
-
-const Button = () => {
-  // 3️⃣ Use context instead of custom hook
-  const { increment } = useConuseContext('counter');
-  return <button onClick={increment}>+</button>;
-};
-
-const Count = () => {
-  // 4️⃣ Use context in other components
-  const { count } = useConuseContext('counter');
-  return <span>{count}</span>;
-};
-
-// 5️⃣ Wrap your components with Provider
 const App = () => (
-  <ConuseProvider>
-    <Count />
-    <Button />
-  </ConuseProvider>
+  <Router>
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/counter">Counter</Link>
+        </li>
+        <li>
+          <Link to="/toggle">Toggle</Link>
+        </li>
+      </ul>
+    </nav>
+
+    <Route path="/counter">
+      <Counter />
+    </Route>
+
+    <Route path="/toggle">
+      <Toggle />
+    </Route>
+  </Router>
 );
+
 const rootElement = document.getElementById('root');
 ReactDOM.render(<App />, rootElement);
