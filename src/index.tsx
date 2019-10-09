@@ -6,6 +6,8 @@
 
 import React, { useContext, createContext, Fragment } from 'react';
 
+const isFunction: (fn: any) => boolean = fn => typeof fn === 'function';
+
 type EmptyContext = React.Context<{}>;
 
 interface ContextProviderProps {
@@ -14,13 +16,14 @@ interface ContextProviderProps {
   children: React.ReactElement | React.ReactElement[];
 }
 
+interface Obj {
+  [name: string]: any;
+}
+
 // TODO 先用 any 解决了，React.ReactElement | React.ReactElement[] 一直有问题
 interface ConuseProviderProps {
   children: any;
-}
-
-interface Obj {
-  [name: string]: any;
+  value?: Obj;
 }
 
 interface IStore {
@@ -50,6 +53,7 @@ const createConuse: (
 ) => IConuse = (useMap = {}, conuseMap = {}) => {
   const store = createStore();
   const names = Object.keys(useMap);
+  const NormalContext = createContext<Obj | undefined>({});
 
   const contextMap: { [name: string]: EmptyContext | Function } = names.reduce(
     (acc, name) => {
@@ -69,12 +73,18 @@ const createConuse: (
   const StoreComponent = () => {
     const context = useConuseContext();
     store.set(
-      Object.keys(context).reduce((acc, name) => ({ ...acc, [name]: context[name]() }), {})
+      Object.keys(context).reduce((acc, name) => {
+        if (isFunction(context[name])) {
+          return { ...acc, [name]: context[name]() };
+        } else {
+          return { ...acc, name };
+        }
+      }, {})
     );
     return null;
   };
 
-  const ConuseProvider: IConuse['ConuseProvider'] = ({ children }: ConuseProviderProps) => names.reduce(
+  const ConuseProvider: IConuse['ConuseProvider'] = ({ children, value }: ConuseProviderProps) => names.reduce(
     (Composed, name) => {
       const Context = contextMap[name] as EmptyContext;
       return (
@@ -88,16 +98,18 @@ const createConuse: (
         const conuse = conuseMap[name];
         return <conuse.ConuseProvider>{Composed}</conuse.ConuseProvider>;
       },
-      <Fragment>
-        <StoreComponent />
-        {children}
-      </Fragment>
+      <NormalContext.Provider value={value}>
+        <Fragment>
+          <StoreComponent />
+          {children}
+        </Fragment>
+      </NormalContext.Provider>
     )
   );
 
   const useConuseContext: IConuse['useConuseContext'] = (name) => {
     if (name) {
-      if (typeof contextMap[name] === 'function') {
+      if (isFunction(contextMap[name])) {
         return (contextMap[name] as Function)(name);
       } else {
         return useContext<Obj>(contextMap[name] as EmptyContext)[name];
@@ -108,7 +120,7 @@ const createConuse: (
           ...acc,
           [$name]: () => useContext<Obj>(contextMap[$name] as EmptyContext)[$name],
         }),
-        {}
+        { ...useContext(NormalContext) }
       );
     }
   };

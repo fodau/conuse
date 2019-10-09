@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import createConuse from '../src/index';
 
 const useCounter = ({ initialCount = 0 } = {}) => {
@@ -222,4 +223,33 @@ test('#GetStore', () => {
   fireEvent.click(getByText('Increment'));
   expect(getByText('2')).toBeDefined();
   expect(getContext(COUNTER).count).toEqual(2);
+});
+
+test('#Value Props', () => {
+  const COUNTER = 'counter';
+  const { ConuseProvider, useConuseContext } = createConuse({ [COUNTER]: useCounter });
+
+  const Increment = () => {
+    const { increment } = useConuseContext(COUNTER);
+    const { locale } = useConuseContext();
+
+    return <button onClick={increment}>{locale.name}</button>;
+  };
+
+  const Count = () => {
+    const { count } = useConuseContext(COUNTER);
+    return <div>{count}</div>;
+  };
+
+  const App = () => (
+    <ConuseProvider value={{ locale: { name: 'Increment' } }}>
+      <Increment />
+      <Count />
+    </ConuseProvider>
+  );
+
+  const { getByText } = render(<App />);
+  expect(getByText('0')).toBeDefined();
+
+  expect(getByText('Increment')).toBeInTheDocument();
 });
