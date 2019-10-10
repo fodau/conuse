@@ -12,3 +12,4 @@ build/*.map
 .deps
 test
 .cache
+examples/
