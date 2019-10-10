@@ -73,7 +73,7 @@ Conuse {
 
 Type: `{ [name: string]: hook }`
 
-It receives custom hook map, using it to compose multiple hook. You can access one hook by passing name to `useConuseContext` parameter.
+It receives custom hook map, using it to compose multiple hook. You can get one hook by passing name to `useConuseContext` parameter.
 
 ```js
 const { useConuseContext } = createConuse({ counter: useCounter });
@@ -101,7 +101,7 @@ const Component = () => {
 
 #### ConuseProvider
 
-Type: React.FC<any>
+Type: `React.FC<any>`
 
 Just like [Context.Provider](https://reactjs.org/docs/context.html#contextprovider), to put the `ConuseProvider` at the top of your App.
 
@@ -113,7 +113,7 @@ Just like [Context.Provider](https://reactjs.org/docs/context.html#contextprovid
 
 #### useConuseContext
 
-Type: (name?: string) => any
+Type: `(name?: string) => any`
 
 The children of ConuseProvider can get certain hook by useConuseContext.
 
@@ -128,7 +128,7 @@ returned of all hooks, you need to execute hook function to get `state` and `set
 
 #### getContext
 
-Type: (name?: string) => any
+Type: `(name?: string) => any`
 
 The difference between getContext and useConuseContext is `getContext` can be used everywhere, not only in Function Component.
 
