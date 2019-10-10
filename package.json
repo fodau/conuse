@@ -1,7 +1,7 @@
 {
   "name": "conuse",
   "description": "Share Hook with Context",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "dist/conuse.cjs.js",
   "module": "dist/conuse.es.js",
   "jsnext:main": "dist/conuse.es.js",
