@@ -9,7 +9,7 @@
     "react-dom": "^16.10.1"
   },
   "devDependencies": {
-    "react-router-dom": "^5.1.2",
-    "parcel": "^1.12.3"
+    "parcel": "^1.12.3",
+    "react-router-dom": "^5.1.2"
   }
 }
